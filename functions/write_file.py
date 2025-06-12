@@ -17,7 +17,7 @@ def write_file(working_directory, file_path, content):
 
 
 from google.genai import types
-schema = types.FunctionDeclaration(
+schema_write_file = types.FunctionDeclaration(
     name="write_file",
     description="Writes the content to the file specified in the file_path, constrained to the working directory.",
     parameters=types.Schema(

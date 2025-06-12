@@ -21,7 +21,7 @@ def get_file_content(working_directory, file_path):
     
 
 from google.genai import types
-schema = types.FunctionDeclaration(
+schema_get_file_content = types.FunctionDeclaration(
     name="get_file_content",
     description="Reads the specified file up to 10000 characters, constrained to the working directory.",
     parameters=types.Schema(

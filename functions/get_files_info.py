@@ -1,6 +1,6 @@
 import os
 
-def get_files_info(working_directory, directory=None):
+def get_files_info(working_directory, directory="."):
     workingDir = os.path.abspath(working_directory) 
     targetDir = os.path.abspath(os.path.join(workingDir, directory))
     if workingDir not in targetDir:
@@ -20,7 +20,7 @@ def get_files_info(working_directory, directory=None):
 
 
 from google.genai import types
-schema = types.FunctionDeclaration(
+schema_get_files_info = types.FunctionDeclaration(
     name="get_files_info",
     description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
     parameters=types.Schema(

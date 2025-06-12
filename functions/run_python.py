@@ -32,7 +32,7 @@ def run_python_file(working_directory, file_path):
 
 
 from google.genai import types
-schema = types.FunctionDeclaration(
+schema_run_python_file = types.FunctionDeclaration(
     name="run_python_file",
     description="Executes the specified python file.",
     parameters=types.Schema(

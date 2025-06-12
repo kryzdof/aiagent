@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-from functions import all_schemas
+from functions import all_schemas, call_function
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -42,9 +42,7 @@ All paths you provide should be relative to the working directory. You do not ne
 
 
 available_functions = types.Tool(
-    function_declarations=[
-        all_schemas,
-    ]
+    function_declarations=all_schemas
 )
 
 vprint(f"User prompt: {user_prompt}")
@@ -53,8 +51,17 @@ messages = [
 ]
 resp = client.models.generate_content(model="gemini-2.0-flash-001", contents=messages,
                                       config=types.GenerateContentConfig(tools=[available_functions], system_instruction=system_prompt))
-print(f"Response {resp.text}")
-for function_call_part in resp.function_calls:
-    print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+if resp.text:
+    print(f"Response {resp.text}")
+if resp.function_calls:
+    for function_call_part in resp.function_calls:
+        function_response = call_function(function_call_part, verbose)
+        try:
+            r = function_response.parts[0].function_response.response
+        except Exception as e:
+            raise Exception(f"Fatal Error: {e}")
+        vprint(f"-> {r}")
+
+
 vprint(f"Prompt tokens: {resp.usage_metadata.prompt_token_count}")
 vprint(f"Response tokens: {resp.usage_metadata.candidates_token_count}")
