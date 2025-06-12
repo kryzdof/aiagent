@@ -13,7 +13,7 @@ def run_python_file(working_directory, file_path):
         return f'Error: "{file_path}" is not a Python file.'
     
     try:
-        time.sleep(30)
+        # time.sleep(30)
         result = subprocess.run(["python", file_path], capture_output=True, cwd=workingDir)
         retString = ""
         if result.stdout or result.stderr: 

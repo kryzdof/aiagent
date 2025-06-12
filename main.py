@@ -49,18 +49,24 @@ vprint(f"User prompt: {user_prompt}")
 messages = [
     types.Content(role="user", parts=[types.Part(text=user_prompt)]),
 ]
-resp = client.models.generate_content(model="gemini-2.0-flash-001", contents=messages,
-                                      config=types.GenerateContentConfig(tools=[available_functions], system_instruction=system_prompt))
-if resp.text:
-    print(f"Response {resp.text}")
-if resp.function_calls:
-    for function_call_part in resp.function_calls:
-        function_response = call_function(function_call_part, verbose)
-        try:
-            r = function_response.parts[0].function_response.response
-        except Exception as e:
-            raise Exception(f"Fatal Error: {e}")
-        vprint(f"-> {r}")
+for x in range(20):
+    resp = client.models.generate_content(model="gemini-2.0-flash-001", contents=messages,
+                                          config=types.GenerateContentConfig(tools=[available_functions], system_instruction=system_prompt))
+    for candy in resp.candidates:
+        messages.append(candy.content)
+    if resp.function_calls:
+        for function_call_part in resp.function_calls:
+            function_response = call_function(function_call_part, verbose)
+            try:
+                r = function_response.parts[0].function_response.response
+            except Exception as e:
+                raise Exception(f"Fatal Error: {e}")
+            messages.append(function_response)
+            vprint(f"-> {r}")
+    else:            
+        if resp.text:
+            print(f"Response {resp.text}")
+            break
 
 
 vprint(f"Prompt tokens: {resp.usage_metadata.prompt_token_count}")
